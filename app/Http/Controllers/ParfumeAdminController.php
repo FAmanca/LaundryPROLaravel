@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Exports\ParfumeExport;
 use App\Imports\ParfumeImport;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\StoreParfumeRequest;
+use App\Http\Requests\UpdateParfumeRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ActivityLogController;
@@ -20,23 +22,8 @@ class ParfumeAdminController extends Controller
         ]);
     }
 
-    public function storeParfume(Request $request) {
-        $rules = [
-            'parfume_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ];
-
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['parfume_name','description']);
+    public function storeParfume(StoreParfumeRequest $request) {
+        $data = $request->validated();
 
         try {
             Parfume::create($data);
@@ -51,22 +38,8 @@ class ParfumeAdminController extends Controller
         }
     }
 
-    public function updateParfume(Request $request, Parfume $parfume) {
-        $rules = [
-            'parfume_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['parfume_name','description']);
+    public function updateParfume(UpdateParfumeRequest $request, Parfume $parfume) {
+        $data = $request->validated();
 
         try {
             $parfume->update($data);

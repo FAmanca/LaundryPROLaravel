@@ -20,5 +20,21 @@ class Service extends Model
         return $this->hasMany(DetailTransaction::class, 'service_id', 'service_id');
     }
 
+    public static function getStatistics()
+    {
+        $total_services = self::count();
+        $popular_service = self::withCount('detailTransactions')
+            ->orderBy('detail_transactions_count', 'desc')
+            ->first();
+        $avg_service_price = round(self::avg('price'));
+        $lowest_service = self::orderBy('price', 'asc')->first();
 
+        return [
+            'total_services' => $total_services,
+            'popular_service' => $popular_service,
+            'avg_service_price' => $avg_service_price,
+            'lowest_service' => $lowest_service,
+        ];
+    }
 }
+

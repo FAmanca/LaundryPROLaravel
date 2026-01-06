@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Exports\ServiceExport;
 use App\Imports\ServiceImport;
 use Flasher\Prime\FlasherInterface;
+use App\Http\Requests\StoreServiceRequest;
+use App\Http\Requests\UpdateServiceRequest;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
@@ -17,49 +19,16 @@ class ServicesAdminController extends Controller
 {
     public function services()
     {
-        $total_services = Service::count();
-        $popular_service = Service::withCount('detailTransactions')
-            ->orderBy('detail_transactions_count', 'desc')
-            ->first();
-
-        $avg_service_price = round(Service::avg('price'));
-
-        $lowest_service = Service::orderBy('price', 'asc')->first();
-
+        $stats = Service::getStatistics();
         $services = Service::withCount('detailTransactions')
             ->paginate(6);
 
-        return view('admin.services', [
-            'total_services' => $total_services,
-            'avg_service_price' => $avg_service_price,
-            'services' => $services,
-            'popular_service' => $popular_service,
-            'lowest_service' => $lowest_service
-        ]);
+        return view('admin.services', array_merge($stats, ['services' => $services]));
     }
 
-    public function storeService(Request $request)
+    public function storeService(StoreServiceRequest $request)
     {
-        $rules = [
-            'service_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'unit' => 'required|string|in:kg,pasang,pcs,m²',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['service_name', 'description', 'price', 'unit', 'icon_name']);
-        if ($request->has('icon_name')) {
-            $data['icon_name'] = $request->input('icon_name');
-        }
+        $data = $request->validated();
 
         try {
             Service::create($data);
@@ -74,28 +43,9 @@ class ServicesAdminController extends Controller
         }
     }
 
-    public function updateService(Request $request, Service $service)
+    public function updateService(UpdateServiceRequest $request, Service $service)
     {
-        $rules = [
-            'service_name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'unit' => 'required|string|in:kg,pasang,pcs,m²',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['service_name', 'description', 'price', 'unit', 'icon_name']);
-        if ($request->has('icon_name')) {
-            $data['icon_name'] = $request->input('icon_name');
-        }
+        $data = $request->validated();
 
         try {
             $service->update($data);

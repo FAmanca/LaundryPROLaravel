@@ -29,4 +29,23 @@ class Transaction extends Model
     public function user() {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+
+    public function getLaundryStatusLabelAttribute()
+    {
+        return match ($this->laundry_status) {
+            'Pending' => 'Pesanan Diterima',
+            'Process' => 'Sedang Diproses',
+            'Completed' => 'Selesai Dicuci, Menunggu Diambil',
+            'Picked Up' => 'Sudah Diambil, Pesanan Selesai',
+        };
+    }
+
+    public function getPaymentStatusLabelAttribute()
+    {
+        return match ($this->payment_status) {
+            'Paid' => 'Lunas',
+            'Partial' => 'DP',
+            'Unpaid' => 'Belum Lunas',
+        };
+    }
 }

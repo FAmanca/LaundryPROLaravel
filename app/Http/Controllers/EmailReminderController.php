@@ -16,12 +16,7 @@ class EmailReminderController extends Controller
         $customerName = $transaction->customer->name;
         $email = $transaction->customer->email;
         $transactionCode = $transaction->transaction_code;
-        $status = match ($transaction->laundry_status) {
-            'Pending' => 'Pesanan Diterima',
-            'Process' => 'Sedang Diproses',
-            'Completed' => 'Selesai Dicuci, Menunggu Diambil',
-            'Picked Up' => 'Sudah Diambil, Pesanan Selesai',
-        };
+        $status = $transaction->laundry_status_label;
         // Dispatch job untuk mengirim email
         SendEmailJob::dispatch($customerName, $email, $transactionCode, $status)->delay(now()->addSeconds(2));
     }
@@ -37,12 +32,7 @@ class EmailReminderController extends Controller
             $customerName = $transaction->customer->name;
             $email = $transaction->customer->email;
             $transactionCode = $transaction->transaction_code;
-            $status = match ($transaction->laundry_status) {
-                'Pending' => 'Pesanan Diterima',
-                'Process' => 'Sedang Diproses',
-                'Completed' => 'Selesai Dicuci, Menunggu Diambil',
-                'Picked Up' => 'Sudah Diambil, Pesanan Selesai',
-            };
+            $status = $transaction->laundry_status_label;
 
             Log::info("Dispatching email to $email for transaction $transactionCode with status $status");
 

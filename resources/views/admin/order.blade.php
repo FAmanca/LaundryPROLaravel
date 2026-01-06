@@ -77,9 +77,9 @@
                             </label>
                             <select id="payment-method" name="payment_method" required
                                 class="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                                <option value="">Pilih metode pembayaran</option>
+                                <option selected disabled>Pilih metode pembayaran</option>
                                 <option value="cash">Cash</option>
-                                <option value="bank">Transfer Bank</option>
+                                <option value="digital">Digital</option>
                             </select>
                         </div>
 

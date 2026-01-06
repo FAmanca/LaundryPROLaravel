@@ -1,0 +1,49 @@
+.customer-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.customer-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+}
+
+.avatar {
+    transition: transform 0.3s ease;
+}
+
+.customer-card:hover .avatar {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.customer-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.customer-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.customer-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.customer-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+.customer-card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+.customer-card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+.empty-state {
+    animation: fadeInUp 0.8s ease-out;
+}

@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Imports\CustomerImport;
 
 class CustomerAdminController extends Controller
@@ -20,47 +22,19 @@ class CustomerAdminController extends Controller
             ->withSum('transactions', 'total')
             ->paginate(10);
 
-        $totalLifetime = Transaction::sum('total');
-        $totalCustomers = Customer::count();
-        $averageLifetime = $totalCustomers > 0 ? $totalLifetime / $totalCustomers : 0;
-
-        $newcustomers = Customer::whereDate('created_at', today())->count();
-
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-        $activeThisMonth = Customer::whereHas('transactions', function ($query) use ($startOfMonth, $endOfMonth) {
-            $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
-        })->get();
-
-        $activeCount = $activeThisMonth->count();
+        $stats = Customer::getStatistics();
 
         return view('admin.customers', [
             'customers' => $customers,
-            'averageLifetime' => $averageLifetime,
-            'newcustomers' => $newcustomers,
-            'activeCount' => $activeCount
+            'averageLifetime' => $stats['averageLifetime'],
+            'newcustomers' => $stats['newCustomers'],
+            'activeCount' => $stats['activeCount']
         ]);
     }
 
-    public function storeCustomer(Request $request)
+    public function storeCustomer(StoreCustomerRequest $request)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|string',
-            'phone' => 'required',
-            'address' => 'required|string|max:255',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['name', 'email', 'phone', 'address']);
+        $data = $request->validated();
 
         try {
             Customer::create($data);
@@ -75,25 +49,9 @@ class CustomerAdminController extends Controller
         }
     }
 
-    public function updateCustomer(Request $request, Customer $customer)
+    public function updateCustomer(UpdateCustomerRequest $request, Customer $customer)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|string',
-            'phone' => 'required',
-            'address' => 'required|string|max:255',
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', implode("\n", $validator->errors()->all()));
-        }
-
-        $data = $request->only(['name', 'email', 'phone', 'address']);
+        $data = $request->validated();
 
         try {
             $customer->update($data);

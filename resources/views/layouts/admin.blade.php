@@ -76,6 +76,7 @@
         }
     </style>
 
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/common.css') }}">
     @stack('styles')
 </head>
 
@@ -107,11 +108,35 @@
                     <a href="{{ route('admin.customers.index') }}"
                         class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.customers.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i data-feather="users" class="w-5 h-5"></i>
-                        <span class="nav-text ml-3 font-medium">Pelanggan</span>
+                        <span class="nav-text ml-3 font-medium">Kelola Pelanggan</span>
+                    </a>
+
+                    <a href="{{ route('admin.orders.index') }}"
+                        class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.orders.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <i data-feather="file-plus" class="w-5 h-5"></i>
+                        <span class="nav-text ml-3 font-medium">Tambah Pesanan</span>
+                    </a>
+
+                    <a href="{{ route('admin.transactions.index') }}"
+                        class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.transactions.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <i data-feather="file-text" class="w-5 h-5"></i>
+                        <span class="nav-text ml-3 font-medium">Kelola Transaksi</span>
+                    </a>
+
+                    <a href="{{ route('admin.services.index') }}"
+                        class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.services.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <i data-feather="package" class="w-5 h-5"></i>
+                        <span class="nav-text ml-3 font-medium">Kelola Layanan</span>
+                    </a>
+
+                    <a href="{{ route('admin.parfumes.index') }}"
+                        class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('admin.parfumes.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
+                        <i data-feather="droplet" class="w-5 h-5"></i>
+                        <span class="nav-text ml-3 font-medium">Kelola Parfum</span>
                     </a>
 
                     <!-- Dropdown: Transaksi -->
-                    <div class="dropdown">
+                    {{-- <div class="dropdown">
                         <button class="nav-item flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none {{ request()->routeIs('admin.transactions.*') || request()->routeIs('admin.orders.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}"
                             onclick="toggleDropdown('transaksiDropdown')">
                             <div class="flex items-center">
@@ -133,10 +158,10 @@
                                 Data Transaksi
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Dropdown: Inventaris -->
-                    <div class="dropdown">
+                    {{-- <div class="dropdown">
                         <button class="nav-item flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none {{ request()->routeIs('admin.services.*') || request()->routeIs('admin.parfumes.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}"
                             onclick="toggleDropdown('inventarisDropdown')">
                             <div class="flex items-center ">
@@ -158,7 +183,7 @@
                                 Parfum
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Lainnya -->
                     {{-- <a href="#"
@@ -167,11 +192,11 @@
                         <span class="nav-text ml-3 font-medium">Reports</span>
                     </a> --}}
 
-                    <a href="#"
+                    {{-- <a href="#"
                         class="nav-item flex items-center px-4 py-3 rounded-lg {{ request()->routeIs('settings.*') ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-100' }}">
                         <i data-feather="settings" class="w-5 h-5"></i>
                         <span class="nav-text ml-3 font-medium">Settings</span>
-                    </a>
+                    </a> --}}
                 </div>
             </nav>
 
@@ -242,21 +267,7 @@
         </div>
     </div>
 
-    <script>
-        // Initialize Feather Icons
-        feather.replace();
-
-        // Sidebar Toggle
-        document.getElementById('sidebar-toggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('collapsed');
-        });
-
-        // Dropdown Toggle
-        function toggleDropdown(id) {
-            const dropdown = document.getElementById(id);
-            dropdown.classList.toggle('hidden');
-        }
-    </script>
+    <script src="{{ asset('assets/admin/js/common.js') }}"></script>
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
