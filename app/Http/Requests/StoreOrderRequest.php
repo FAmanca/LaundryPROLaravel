@@ -25,7 +25,7 @@ class StoreOrderRequest extends FormRequest
             'customer_id' => 'required|exists:customers,customer_id',
             'parfume_id' => 'required|exists:parfumes,parfume_id',
             'date' => 'required|date',
-            'payment_method' => 'required|in:cash,transfer,qris',
+            'payment_method' => 'required|in:cash,digital',
             'payment-status' => 'required|in:paid,unpaid,downpayment',
             'downpayment_amount' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',

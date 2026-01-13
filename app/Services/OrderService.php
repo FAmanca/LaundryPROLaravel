@@ -2,15 +2,24 @@
 
 namespace App\Services;
 
+use App\Models\Payment;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ActivityLogController;
+use App\Services\MidtransService;
 
 class OrderService
 {
-    public function createOrder(array $data): Transaction
+    protected $midtransService;
+
+    public function __construct(MidtransService $midtransService)
+    {
+        $this->midtransService = $midtransService;
+    }
+
+    public function createOrder(array $data): array
     {
         try {
             DB::beginTransaction();
@@ -23,30 +32,17 @@ class OrderService
             $order->parfume_id = $data['parfume_id'];
             $order->user_id = auth()->user()->user_id;
             $order->estimated_date = $data['date'];
-            $order->payment_method = $data['payment_method'];
-            $order->payment_status = $data['payment-status'] == 'downpayment' ? 'Partial' : $data['payment-status'];
+            $order->payment_status = $data['payment-status'] == 'downpayment' ? 'Partial' : ($data['payment-status'] == 'paid' ? 'Paid' : 'Unpaid');
 
             foreach ($data['items'] as $item) {
                 $subtotal += $item['price'] * $item['quantity'];
             }
 
             $total = $subtotal - ($data['discount'] ?? 0);
-            $downpayment_amount = $data['downpayment_amount'] ?? 0;
-            $remaining_amount = $total - $downpayment_amount;
 
             $order->subtotal = $subtotal;
             $order->total = $total;
             $order->discount = $data['discount'] ?? 0;
-
-            $order->remaining_paid = $remaining_amount;
-
-            if ($data['payment-status'] == 'paid') {
-                $order->remaining_paid = 0;
-                $order->ammount_paid = $total;
-            } else {
-                $order->ammount_paid = $downpayment_amount;
-            }
-
             $order->save();
 
             foreach ($data['items'] as $item) {
@@ -59,10 +55,31 @@ class OrderService
                 ]);
             }
 
+            $paymentAmount = 0;
+            if ($order->payment_status == 'Paid') {
+                $paymentAmount = $total;
+            } elseif ($order->payment_status == 'Partial') {
+                $paymentAmount = $data['downpayment_amount'] ?? 0;
+            }
+
+            $midtrans = null;
+            if ($paymentAmount > 0) {
+                $payment = $order->payments()->create([
+                    'amount' => $paymentAmount,
+                    'payment_method' => $data['payment_method'],
+                    'status' => $data['payment_method'] == 'cash' ? 'success' : 'pending',
+                ]);
+
+                if ($data['payment_method'] == 'digital') {
+                    $midtrans = $this->handleDigitalPayment($order, $payment, $paymentAmount);
+                }
+            }
+
+
             DB::commit();
             ActivityLogController::log('Create', 'Transaksi Baru Di Tambahkan : ' . $transaction_code, auth()->user()->user_id);
 
-            return $order;
+            return ['order' => $order, 'midtrans' => $midtrans];
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Store Order Error: ' . $e->getMessage());
@@ -70,37 +87,106 @@ class OrderService
         }
     }
 
-    public function updateOrder(Transaction $order, array $data): Transaction
+    public function updateOrder(Transaction $order, array $data): array
     {
         try {
             DB::beginTransaction();
+            $midtrans = null;
 
-            $order->payment_status = $data['payment_status'];
+            if (isset($data['amount_paid_now']) && $data['amount_paid_now'] > 0) {
+                $payment = $order->payments()->create([
+                    'amount' => $data['amount_paid_now'],
+                    'payment_method' => $data['payment_method_update'],
+                    'status' => $data['payment_method_update'] == 'cash' ? 'success' : 'pending',
+                ]);
 
-            if ($order->payment_status === 'Paid') {
-                $order->ammount_paid = $order->total;
-                $order->remaining_paid = 0;
-            } elseif ($order->payment_status === 'Partial') {
-                $order->ammount_paid = $data['ammount_paid'] ?? 0;
-                $order->remaining_paid = $order->total - $order->ammount_paid;
-            } else {
-                $order->ammount_paid = 0;
-                $order->remaining_paid = $order->total;
+                if ($data['payment_method_update'] == 'digital') {
+                    $midtrans = $this->handleDigitalPayment($order, $payment, $data['amount_paid_now']);
+                }
             }
 
-            $order->laundry_status = $data['laundry_status'];
-            $order->note = $data['note'];
+            $order->refresh();
+
+            $totalPaid = $order->amount_paid;
+            if ($totalPaid >= $order->total) {
+                $order->payment_status = 'Paid';
+            } elseif ($totalPaid > 0) {
+                $order->payment_status = 'Partial';
+            } else {
+                $order->payment_status = 'Unpaid';
+            }
+
+            $order->laundry_status = $data['laundry_status'] ?? $order->laundry_status;
+            $order->note = $data['note'] ?? $order->note;
 
             $order->save();
 
             DB::commit();
             ActivityLogController::log('Update', 'Transaksi Di Ubah : ' . $order->transaction_code, auth()->user()->user_id);
 
-            return $order;
+            return ['order' => $order, 'midtrans' => $midtrans];
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Update Order Error: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    public function retryDigitalPayment(Transaction $order): array
+    {
+        try {
+            DB::beginTransaction();
+            $midtrans = null;
+
+            $remainingAmount = $order->total - $order->amount_paid;
+            if ($remainingAmount <= 0) {
+                throw new \Exception('This order is already fully paid.');
+            }
+
+            $payment = $order->payments()->create([
+                'amount' => $remainingAmount,
+                'payment_method' => 'digital',
+                'status' => 'pending',
+            ]);
+
+            $midtrans = $this->handleDigitalPayment($order, $payment, $remainingAmount);
+
+            DB::commit();
+            ActivityLogController::log('Update', 'Percobaan Pembayaran Digital Baru : ' . $order->transaction_code, auth()->user()->user_id);
+
+            return ['order' => $order, 'midtrans' => $midtrans];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Retry Digital Payment Error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function handleDigitalPayment(Transaction $order, Payment $payment, int $amount)
+    {
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->transaction_code . '-' . $payment->payment_id,
+                'gross_amount' => $amount,
+            ],
+            'customer_details' => [
+                'first_name' => $order->customer->name,
+                'email' => $order->customer->email,
+                'phone' => $order->customer->phone,
+            ],
+            'enabled_payments' => ['gopay', 'shopeepay_qris'],
+        ];
+
+        $midtrans = $this->midtransService->createTransaction($params);
+
+        if (isset($midtrans['error'])) {
+            throw new \Exception('Midtrans Error: ' . $midtrans['error']);
+        }
+
+        $payment->midtrans_order_id = $params['transaction_details']['order_id'];
+        $payment->snap_token = $midtrans['snap_token'];
+        $payment->save();
+
+        return $midtrans;
     }
 }

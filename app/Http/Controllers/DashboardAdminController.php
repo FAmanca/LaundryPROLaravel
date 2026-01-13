@@ -68,4 +68,3 @@ class DashboardAdminController extends Controller
         return $pdf->download('laporan-transaksi.pdf');
     }
 }
-

@@ -87,8 +87,6 @@ class ParfumeAdminController extends Controller
     public function exportParfume()
     {
         try {
-            // ActivityLogController::log('Other', 'Parfume Diexport', auth()->user()->user_id);
-
             return Excel::download(new ParfumeExport, 'parfumes.xlsx');
         } catch (\Exception $e) {
             Log::error('export Service Error: ' . $e->getMessage());

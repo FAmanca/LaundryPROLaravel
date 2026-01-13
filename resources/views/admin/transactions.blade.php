@@ -7,7 +7,6 @@
 @endpush
 
 @section('content')
-    <!-- Header Section -->
     <div class="mb-8 fade-in-up">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -20,7 +19,6 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in-up" style="animation-delay: 0.1s;">
         <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">
@@ -67,9 +65,7 @@
         </div>
     </div>
 
-    <!-- Main Content Card -->
     <div class="bg-white rounded-2xl shadow-lg overflow-hidden fade-in-up" style="animation-delay: 0.2s;">
-        <!-- Bulk Actions Bar -->
         <div id="bulk-actions-bar" class="bulk-actions-bar bg-indigo-600 px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <span class="text-white font-medium">
@@ -94,10 +90,8 @@
             </div>
         </div>
 
-        <!-- Card Header with Search & Filter -->
         <div class="p-6 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
             <div class="flex flex-col lg:flex-row gap-4">
-                <!-- Search Bar -->
                 <div class="flex-1">
                     <div class="relative">
                         <i data-feather="search"
@@ -108,9 +102,7 @@
                     </div>
                 </div>
 
-                <!-- Filter Buttons -->
                 <div class="flex gap-2 flex-wrap">
-                    <!-- Status Bayar Filter -->
                     <div class="relative">
                         <button id="filter-bayar-btn"
                             class="action-btn px-4 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 border border-gray-200 shadow-sm flex items-center gap-2">
@@ -143,7 +135,6 @@
                         </div>
                     </div>
 
-                    <!-- Status Laundry Filter -->
                     <div class="relative">
                         <button id="filter-laundry-btn"
                             class="action-btn px-4 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 border border-gray-200 shadow-sm flex items-center gap-2">
@@ -176,7 +167,6 @@
                         </div>
                     </div>
 
-                    <!-- Export Button -->
                     <button
                         class="action-btn px-4 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 border border-gray-200 shadow-sm flex items-center gap-2">
                         <i data-feather="download" class="w-4 h-4"></i>
@@ -186,7 +176,6 @@
             </div>
         </div>
 
-        <!-- Table -->
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-200">
@@ -218,7 +207,6 @@
             </table>
         </div>
 
-        <!-- Pagination -->
         @if ($transactions->hasPages())
             <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
                 <div class="text-sm text-gray-600">
@@ -231,13 +219,10 @@
         @endif
     </div>
 
-    <!-- Detail & Edit Modals -->
     @foreach ($transactions as $transaction)
-        <!-- Detail Modal -->
         <div id="detail-modal-{{ $transaction->transaction_id }}"
             class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                <!-- Modal Header -->
                 <div class="sticky top-0 bg-white p-6 border-b border-gray-200 rounded-t-2xl z-10">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
@@ -256,11 +241,8 @@
                     </div>
                 </div>
 
-                <!-- Modal Body -->
                 <div class="p-6">
-                    <!-- Customer & Transaction Info -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <!-- Customer Info -->
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-5">
                             <h4 class="text-sm font-semibold text-blue-900 mb-4 flex items-center gap-2">
                                 <i data-feather="user" class="w-4 h-4"></i>
@@ -284,7 +266,6 @@
                             </div>
                         </div>
 
-                        <!-- Transaction Info -->
                         <div
                             class="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-5">
                             <h4 class="text-sm font-semibold text-purple-900 mb-4 flex items-center gap-2">
@@ -372,7 +353,6 @@
                         </div>
                     </div>
 
-                    <!-- Parfum Info -->
                     <div class="bg-gray-50 rounded-xl p-4 mb-6">
                         <div class="flex items-center gap-2 text-sm text-gray-700">
                             <i data-feather="droplet" class="w-4 h-4 text-indigo-600"></i>
@@ -381,7 +361,6 @@
                         </div>
                     </div>
 
-                    <!-- Order Items -->
                     <div class="bg-gray-50 rounded-xl p-5 mb-6">
                         <h4 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
                             <i data-feather="shopping-bag" class="w-4 h-4"></i>
@@ -414,7 +393,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment Summary -->
                     <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 rounded-xl p-5">
                         <h4 class="text-sm font-semibold text-indigo-900 mb-4 flex items-center gap-2">
                             <i data-feather="credit-card" class="w-4 h-4"></i>
@@ -436,26 +414,25 @@
                                 <span class="font-bold text-indigo-900 text-xl">Rp
                                     {{ number_format($transaction->total, 0, ',', '.') }}</span>
                             </div>
-                            @if ($transaction->payment_status == 'Partial')
-                                <div class="pt-3 border-t border-indigo-200 flex justify-between text-gray-700">
-                                    <span>Sudah Dibayar (DP)</span>
-                                    <span class="font-semibold text-green-600">Rp
-                                        {{ number_format($transaction->ammount_paid, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="flex justify-between text-gray-700">
-                                    <span>Sisa Pembayaran</span>
-                                    <span class="font-semibold text-red-600">Rp
-                                        {{ number_format($transaction->total - $transaction->ammount_paid, 0, ',', '.') }}</span>
-                                </div>
-                            @endif
+                             <div class="pt-3 border-t border-indigo-200 flex justify-between text-gray-700">
+                                <span>Sudah Dibayar</span>
+                                <span class="font-semibold text-green-600">Rp {{ number_format($transaction->amount_paid, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-700">
+                                <span>Sisa Pembayaran</span>
+                                <span class="font-semibold text-red-600">Rp {{ number_format($transaction->remaining_amount, 0, ',', '.') }}</span>
+                            </div>
                             <div class="pt-3 border-t border-indigo-200 flex justify-between text-gray-700">
                                 <span>Metode Pembayaran</span>
-                                <span class="font-semibold">{{ ucwords($transaction->payment_method) }}</span>
+                                 <span class="font-semibold">
+                                    @foreach($transaction->payments->unique('payment_method') as $payment)
+                                        {{ ucwords($payment->payment_method) }}{{ !$loop->last ? ',' : '' }}
+                                    @endforeach
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Notes -->
                     @if ($transaction->note)
                         <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mt-6">
                             <h4 class="text-sm font-semibold text-amber-900 mb-2 flex items-center gap-2">
@@ -467,7 +444,6 @@
                     @endif
                 </div>
 
-                <!-- Modal Footer -->
                 <div class="sticky bottom-0 bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-2xl flex gap-3">
                     <button
                         class="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
@@ -482,11 +458,9 @@
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div id="edit-modal-{{ $transaction->transaction_id }}"
             class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <!-- Modal Header -->
                 <div class="sticky top-0 bg-white p-6 border-b border-gray-200 rounded-t-2xl z-10">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
@@ -505,49 +479,58 @@
                     </div>
                 </div>
 
-                <!-- Modal Body -->
                 <div class="p-6">
                     <form action="{{ route('admin.orders.update', $transaction->transaction_id) }}" method="POST">
                         @csrf
                         @method('PUT')
 
-                        <div class="space-y-5">
-                            <!-- Status Pembayaran -->
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Status Pembayaran <span class="text-red-500">*</span>
-                                </label>
-                                <select name="payment_status" required
-                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
-                                    <option value="Unpaid"
-                                        {{ $transaction->payment_status == 'Unpaid' ? 'selected' : '' }}>Belum Lunas
-                                    </option>
-                                    <option value="Partial"
-                                        {{ $transaction->payment_status == 'Partial' ? 'selected' : '' }}>DP (Sebagian)
-                                    </option>
-                                    <option value="Paid" {{ $transaction->payment_status == 'Paid' ? 'selected' : '' }}>
-                                        Lunas</option>
-                                </select>
-                            </div>
-
-                            <!-- Jumlah Dibayar (untuk DP) -->
-                            <div id="amount-paid-field-{{ $transaction->transaction_id }}"
-                                class="{{ $transaction->payment_status == 'Partial' ? '' : 'hidden' }}">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Jumlah Dibayar (DP)
-                                </label>
-                                <div class="relative">
-                                    <span
-                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
-                                    <input type="number" name="ammount_paid" value="{{ $transaction->ammount_paid }}"
-                                        placeholder="0"
-                                        class="input-field w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                <h4 class="font-semibold text-gray-800 mb-3">Ringkasan Pembayaran</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Total Tagihan</span>
+                                        <span class="font-bold text-gray-900">Rp {{ number_format($transaction->total, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Sudah Dibayar</span>
+                                        <span class="font-semibold text-green-600">Rp {{ number_format($transaction->amount_paid, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="flex justify-between pt-2 border-t">
+                                        <span class="font-bold text-gray-900">Sisa Tagihan</span>
+                                        <span class="font-bold text-red-600">Rp {{ number_format($transaction->remaining_amount, 0, ',', '.') }}</span>
+                                    </div>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500">Total: Rp
-                                    {{ number_format($transaction->total, 0, ',', '.') }}</p>
                             </div>
 
-                            <!-- Status Laundry -->
+                            @if($transaction->payment_status != 'Paid')
+                            <div id="new-payment-section-{{ $transaction->transaction_id }}">
+                                <h4 class="font-semibold text-gray-800 mb-3">Lakukan Pembayaran Baru</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                     <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Jumlah Pembayaran Baru
+                                        </label>
+                                        <div class="relative">
+                                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">Rp</span>
+                                            <input type="number" name="amount_paid_now" value="0" placeholder="0" min="0" max="{{ $transaction->remaining_amount }}"
+                                                class="input-field w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                           Metode Pembayaran
+                                        </label>
+                                        <select name="payment_method_update"
+                                            class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                                            <option value="cash">Cash</option>
+                                            <option value="digital">Digital</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                                     Status Laundry <span class="text-red-500">*</span>
@@ -567,17 +550,15 @@
                                 </select>
                             </div>
 
-                            <!-- Catatan -->
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                                     Catatan
                                 </label>
                                 <textarea name="note" rows="3" placeholder="Tambahkan catatan untuk transaksi ini..."
-                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all">{{ $transaction->notes }}</textarea>
+                                    class="input-field w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all">{{ $transaction->note }}</textarea>
                             </div>
                         </div>
 
-                        <!-- Modal Footer -->
                         <div class="flex gap-3 mt-8 pt-6 border-t border-gray-200">
                             <button type="submit"
                                 class="save-edit-btn flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">

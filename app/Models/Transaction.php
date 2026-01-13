@@ -30,6 +30,20 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
+    public function payments() {
+        return $this->hasMany(Payment::class, 'transaction_id', 'transaction_id');
+    }
+
+    public function getAmountPaidAttribute()
+    {
+        return $this->payments()->where('status', 'success')->sum('amount');
+    }
+
+    public function getRemainingAmountAttribute()
+    {
+        return $this->total - $this->getAmountPaidAttribute();
+    }
+
     public function getLaundryStatusLabelAttribute()
     {
         return match ($this->laundry_status) {

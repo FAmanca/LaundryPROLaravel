@@ -124,8 +124,6 @@ class CustomerAdminController extends Controller
     public function exportCustomer()
     {
         try {
-            // ActivityLogController::log('Other', 'Parfume Diexport', auth()->user()->user_id);
-
             return Excel::download(new CustomerExport, 'customer.xlsx');
         } catch (\Exception $e) {
             return redirect()->back()

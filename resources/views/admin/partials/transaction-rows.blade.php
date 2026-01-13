@@ -47,7 +47,7 @@
                 <i data-feather="{{ $badge['icon'] }}" class="w-3 h-3"></i>
                 {{ $badge['label'] }}
                 @if ($transaction->payment_status == 'Partial')
-                    ({{ formatRupiahSingkat($transaction->ammount_paid) }})
+                    ({{ formatRupiahSingkat($transaction->amount_paid) }})
                 @endif
             </span>
         </td>
@@ -81,6 +81,16 @@
                     title="Edit">
                     <i data-feather="edit-2" class="w-4 h-4"></i>
                 </button>
+                @if ($transaction->remaining_amount > 0)
+                    <form action="{{ route('admin.transactions.retry', $transaction->transaction_id) }}" method="POST"
+                        class="inline" title="Retry Digital Payment">
+                        @csrf
+                        <button type="submit"
+                            class="action-btn w-8 h-8 rounded-lg bg-cyan-100 hover:bg-cyan-200 flex items-center justify-center text-cyan-600 transition-colors">
+                            <i data-feather="refresh-cw" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+                @endif
                 <button
                     data-url="{{ route('admin.transactions.send-email', $transaction->transaction_id) }}"
                     data-email-id="{{ $transaction->transaction_id }}"

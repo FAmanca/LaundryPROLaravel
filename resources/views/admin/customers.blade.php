@@ -265,7 +265,7 @@
                     hingga <span class="font-semibold">{{ $customers->lastItem() }}</span>
                     dari <span class="font-semibold">{{ $customers->total() }}</span> pelanggan
                 </div>
-                {{ $customers->links('vendor.pagination.tailwind') }}
+                {{ $customers->links('pagination::tailwind') }}
             </div>
         @endif
     </div>

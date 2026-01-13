@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Payment;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,7 @@ class TransactionAdminController extends Controller
 {
     public function transactions(Request $request)
     {
-        $query = Transaction::with(['customer', 'parfume', 'user', 'details.service']);
+        $query = Transaction::with(['customer', 'parfume', 'user', 'details.service', 'payments']);
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
@@ -40,7 +41,7 @@ class TransactionAdminController extends Controller
         $total_transactions = Transaction::count();
         $processing_transactions = Transaction::where('laundry_status', 'Process')->count();
         $paid_transactions = Transaction::where('payment_status', 'Paid')->count();
-        $today_total_income = Transaction::whereDate('created_at', Carbon::today())->sum('ammount_paid');
+        $today_total_income = Payment::where('status', 'success')->whereDate('created_at', Carbon::today())->sum('amount');
 
         if ($request->ajax()) {
             return view('admin.partials.transaction-rows', compact('transactions'))->render();

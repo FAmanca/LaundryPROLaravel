@@ -3,6 +3,7 @@
 use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MidtransController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/midtrans/notification', [MidtransController::class, 'notificationHandler']);
 
 Route::get('/tests', function () {
     $data = Test::all();

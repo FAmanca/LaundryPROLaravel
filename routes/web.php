@@ -43,6 +43,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth','as' => 'admin.'], fun
 
     Route::group(['prefix' => 'orders','as' => 'orders.'], function () {
         Route::get('/', [OrderAdminController::class, 'order'])->name('index');
+        Route::get('/{transaction_id}/payment', [OrderAdminController::class, 'showPaymentGateway'])->name('payment');
         Route::post('/store', [OrderAdminController::class, 'storeOrder'])->name('store');
         Route::put('/update/{order}', [OrderAdminController::class, 'updateOrder'])->name('update');
         Route::delete('/store/{order}', [OrderAdminController::class, 'deleteOrder'])->name('delete');
@@ -81,6 +82,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth','as' => 'admin.'], fun
 
     Route::group(['prefix' => 'transactions','as' => 'transactions.'], function () {
         Route::get('/', [TransactionAdminController::class, 'transactions'])->name('index');
+        Route::post('/{order}/retry', [OrderAdminController::class, 'retryPayment'])->name('retry');
 
         Route::post('/send-email/{transaction}', [EmailReminderController::class, 'sendReminder'])->name('send-email');
         Route::post('/send-bulk-email', [EmailReminderController::class, 'bulkSendEmail'])->name('sendBulk-email');

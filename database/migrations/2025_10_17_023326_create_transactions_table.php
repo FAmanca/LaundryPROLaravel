@@ -18,14 +18,11 @@ return new class extends Migration
             $table->ForeignId('parfume_id')->constrained('parfumes','parfume_id')->onDelete('cascade');
             $table->ForeignId('user_id')->constrained('users','user_id')->onDelete('cascade');
             $table->date('estimated_date');
-            $table->enum('payment_method', ['cash', 'digital']);
             $table->enum('payment_status', ['Paid', 'Unpaid', 'Partial'])->default('Unpaid');
             $table->enum('laundry_status', ['Pending', 'Process', 'Completed', 'Picked Up'])->default('Pending');
             $table->integer('subtotal');
             $table->integer('discount');
             $table->integer('total');
-            $table->integer('ammount_paid');
-            $table->integer('remaining_paid');
             $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();

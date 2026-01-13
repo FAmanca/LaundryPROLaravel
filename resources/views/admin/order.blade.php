@@ -11,13 +11,10 @@
     <form id="order-form" method="POST" action="{{ route('admin.orders.store') }}">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Services/Packages Section (Left - 2 columns) -->
             <div class="lg:col-span-2">
-                <!-- Order Information -->
                 <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Informasi Pelanggan</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Customer Select with Search -->
                         <div>
                             <label for="customer" class="block text-sm font-medium text-gray-700 mb-2">
                                 Pilih Pelanggan <span class="text-red-500">*</span>
@@ -28,7 +25,6 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                                 <input type="hidden" name="customer_id" id="customer-id" required>
 
-                                <!-- Dropdown Results -->
                                 <div id="customer-results"
                                     class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
                                     <div class="p-2 text-sm text-gray-500 text-center">Type to search...</div>
@@ -39,7 +35,6 @@
                             @enderror
                         </div>
 
-                        <!-- Parfume Select -->
                         <div>
                             <label for="parfume" class="block text-sm font-medium text-gray-700 mb-2">
                                 Pilih Parfum <span class="text-red-500">*</span>
@@ -56,7 +51,6 @@
                             @enderror
                         </div>
 
-                        <!-- Date Select -->
                         <div>
                             <label for="date" class="block text-sm font-medium text-gray-700 mb-2">
                                 Estimasi Selesai <span class="text-red-500">*</span>
@@ -68,7 +62,6 @@
                             @enderror
                         </div>
 
-                        <!-- Payment Method -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 <span class="flex items-center">
@@ -102,7 +95,6 @@
                         </a>
                     </div>
                 @else
-                    <!-- Services Grid -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <h2 class="text-lg font-semibold text-gray-800 mb-4">Pilih Paketan</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="services-grid">
@@ -142,12 +134,10 @@
                 @endif
             </div>
 
-            <!-- Cart Section (Right - 1 column) -->
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-xl shadow-sm p-6 sticky top-6">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Keranjang</h2>
 
-                    <!-- Cart Items -->
                     <div id="cart-items" class="space-y-3 mb-4 max-h-96 overflow-y-auto">
                         <div class="text-center py-8 text-gray-400">
                             <i data-feather="shopping-cart" class="w-12 h-12 mx-auto mb-2"></i>
@@ -155,7 +145,6 @@
                         </div>
                     </div>
 
-                    <!-- Summary -->
                     <div class="border-t border-gray-200 pt-4 space-y-2">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Subtotal</span>
@@ -167,7 +156,6 @@
                         </div>
                     </div>
 
-                    <!-- Payment status -->
                     <div class="mt-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <span class="flex items-center">
@@ -183,7 +171,6 @@
                         </select>
                     </div>
 
-                    <!-- DP Input -->
                     <div class="mt-4" id="dp-input">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Jumlah DP (Down Payment) <span class="text-red-500">*</span>
@@ -197,13 +184,10 @@
                         <p class="mt-1.5 text-xs text-gray-500" id="dp-hint">Minimal 50% dari total harga</p>
                     </div>
 
-                    <!-- Hidden inputs for cart items -->
                     <div id="cart-hidden-inputs"></div>
 
-                    <!-- Hidden input for total amount -->
                     <input type="hidden" name="total_amount" id="total-amount-input">
 
-                    <!-- Action Buttons -->
                     <div class="mt-6 space-y-2">
                         <button type="submit" id="submit-btn"
                             class="w-full py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -224,7 +208,6 @@
         <script>
             feather.replace();
 
-            // ==================== CUSTOMER SEARCH ====================
             const customerSearch = document.getElementById('customer-search');
             const customerResults = document.getElementById('customer-results');
             const customerIdInput = document.getElementById('customer-id');
@@ -289,7 +272,6 @@
                 }
             });
 
-            // ==================== CART MANAGER ====================
             const CartManager = {
                 items: {},
 
@@ -399,7 +381,6 @@
                     document.getElementById('subtotal').textContent = this.formatRupiah(subtotal);
                     document.getElementById('total-amount-input').value = subtotal;
                     this.updateTotalDisplay(subtotal);
-                    // cartData.value = JSON.stringify(this.items);
 
                     console.log('✅ Cart rendered. Items:', Object.keys(this.items).length, 'Subtotal:', this.formatRupiah(
                         subtotal));
@@ -413,7 +394,6 @@
                     const paymentStatus = document.getElementById('payment-status')?.value || '';
                     const minDP = Math.round(subtotal * 0.5);
 
-                    // ✅ Hanya tampil jika status = downpayment
                     if (paymentStatus === 'downpayment') {
                         dpInputDiv.classList.remove('hidden');
                         dpInput.required = true;
@@ -441,14 +421,12 @@
                 }
             };
 
-            // ✅ Tambahkan event listener supaya update DP ketika status berubah
             document.getElementById('payment-status')?.addEventListener('change', function() {
                 const subtotal = CartManager.getSubtotal();
                 CartManager.updateTotalDisplay(subtotal);
             });
 
 
-            // ==================== SERVICE CARD INTERACTIONS ====================
             document.querySelectorAll('.service-card').forEach(card => {
                 const minusBtn = card.querySelector('.minus-btn');
                 const plusBtn = card.querySelector('.plus-btn');
@@ -491,19 +469,16 @@
                 });
             });
 
-            // ==================== CLEAR CART BUTTON ====================
             document.getElementById('clear-cart').addEventListener('click', () => {
                 if (confirm('Clear all items from cart?')) {
                     CartManager.clearAll();
                 }
             });
 
-            // ==================== PAYMENT METHOD CHANGE ====================
             document.getElementById('payment-method').addEventListener('change', () => {
                 CartManager.render();
             });
 
-            // ==================== DP INPUT HANDLERS ====================
             const dpInput = document.getElementById('downpayment-amount');
 
             dpInput.addEventListener('input', function() {
@@ -541,7 +516,6 @@
                 CartManager.render();
             });
 
-            // ==================== FORM VALIDATION ====================
             document.getElementById('order-form').addEventListener('submit', function(e) {
                 if (Object.keys(CartManager.items).length === 0) {
                     e.preventDefault();
@@ -557,14 +531,14 @@
                     return false;
                 }
 
-                const paymentMethod = document.getElementById('payment-method').value;
-                if (!paymentMethod) {
+                const paymentStatus = document.getElementById('payment-status').value;
+                if (!paymentStatus) {
                     e.preventDefault();
-                    alert('Silakan pilih metode pembayaran!');
+                    alert('Silakan pilih status pembayaran!');
                     return false;
                 }
 
-                if (paymentMethod === 'downpayment') {
+                if (paymentStatus === 'downpayment') {
                     const dpAmount = parseFloat(dpInput.value) || 0;
                     const subtotal = CartManager.getSubtotal();
                     const minDP = Math.round(subtotal * 0.5);
@@ -597,7 +571,6 @@
                 return true;
             });
 
-            // ==================== INITIALIZE ====================
             CartManager.render();
         </script>
     @endpush

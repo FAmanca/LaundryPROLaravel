@@ -11,13 +11,10 @@ class EmailReminderController extends Controller
 {
     public function sendReminder(Transaction $transaction)
     {
-        // Log::info($transaction);
-        // Contoh data pelanggan dan transaksi
         $customerName = $transaction->customer->name;
         $email = $transaction->customer->email;
         $transactionCode = $transaction->transaction_code;
         $status = $transaction->laundry_status_label;
-        // Dispatch job untuk mengirim email
         SendEmailJob::dispatch($customerName, $email, $transactionCode, $status)->delay(now()->addSeconds(2));
     }
 
