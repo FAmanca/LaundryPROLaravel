@@ -89,6 +89,8 @@ class OrderService
 
     public function updateOrder(Transaction $order, array $data): array
     {
+        
+        Log::info("MENCOBA UPDATE ORDER DI SERVICE");
         try {
             DB::beginTransaction();
             $midtrans = null;
@@ -118,8 +120,11 @@ class OrderService
 
             $order->laundry_status = $data['laundry_status'] ?? $order->laundry_status;
             $order->note = $data['note'] ?? $order->note;
-
+            Log::info($data['laundry_status']);
+            Log::info($order->laundry_status);
             $order->save();
+            Log::info("MENGUPDATE LAUNDRY");
+            Log::info($order);
 
             DB::commit();
             ActivityLogController::log('Update', 'Transaksi Di Ubah : ' . $order->transaction_code, auth()->user()->user_id);

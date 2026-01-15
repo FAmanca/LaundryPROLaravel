@@ -95,6 +95,7 @@ class OrderAdminController extends Controller
 
     public function updateOrder(UpdateOrderRequest $request, Transaction $order)
     {
+        Log::info("NYOBA UPDATE DI CONTROLLER ORDER");
         try {
             $result = $this->orderService->updateOrder($order, $request->validated());
             $updatedOrder = $result['order'];

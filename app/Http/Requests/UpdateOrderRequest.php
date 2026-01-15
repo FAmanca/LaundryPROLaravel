@@ -22,9 +22,9 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_status' => 'required|in:Paid,Unpaid,Partial',
+            // 'payment_status' => 'required|in:Paid,Unpaid,Partial',
             'laundry_status' => 'required|in:Pending,Process,Completed,Picked Up',
-            'ammount_paid' => 'nullable|numeric|min:0',
+            // 'ammount_paid' => 'nullable|numeric|min:0',
             'note' => 'nullable|string',
         ];
     }
