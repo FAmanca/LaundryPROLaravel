@@ -503,7 +503,7 @@
                                 </div>
                             </div>
 
-                            @if($transaction->payment_status != 'Paid')
+                            {{-- @if($transaction->payment_status != 'Paid')
                             <div id="new-payment-section-{{ $transaction->transaction_id }}">
                                 <h4 class="font-semibold text-gray-800 mb-3">Lakukan Pembayaran Baru</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -529,7 +529,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @endif
+                            @endif --}}
 
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-2">
